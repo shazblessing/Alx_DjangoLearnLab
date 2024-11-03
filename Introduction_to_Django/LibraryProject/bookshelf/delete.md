@@ -1,2 +1,2 @@
-from bookshelf.model import book
+from bookshelf.models import Book
 book.delete()
