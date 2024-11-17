@@ -1,5 +1,6 @@
-from .models import Author, Book, Library, Librarian
-from django.shortcuts import render
+from .models import Book
+from .models import Library
+from django.shortcuts import render,get_object_or_404
 from django.views.generic import DetailView
 
 def get_books(request): 
@@ -13,5 +14,9 @@ def get_books(request):
 
 class BookDetail(DetailView):
     model=Library
-    template_name= "relationship_app/list_books_detail.html"
+    template_name= "relationship_app/library_detail.html"
     context_object_name="books"
+
+    def get_queryset(self):
+        library= get_object_or_404(Book,book=self.kwargs.get("book"))
+        return Library.objects.get(library=library)
