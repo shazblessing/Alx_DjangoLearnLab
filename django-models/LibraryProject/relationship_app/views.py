@@ -8,7 +8,7 @@ def get_books(request):
     context = {
         "books":books
     } 
-    return render(request,"book/book.html",context)
+    return render(request,"relationship_app/list_books.html",context)
 
 
 class BookDetail(DetailView):
