@@ -90,8 +90,9 @@ def user_logout(request):
     logout(request)
     return render(request, 'relationship_app/logout.html')
 
-from django.shortcuts import render
+
 from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render
 
 def is_admin(user):
     return user.userprofile.role == 'Admin'
