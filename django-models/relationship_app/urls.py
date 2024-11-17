@@ -1,15 +1,7 @@
-from django.urls import path
-from .views import list_books
-urlpatterns = [
-    path('books/', list_books, name='list_books'),  # URL for function-based view
-    path('library/<int:pk>/', LibraryDetailView.as_view(), name='library_detail'),  # URL for class-based view
-]
-from django.urls import path
-from .views import CustomLoginView, CustomLogoutView, register
-from django.contrib.auth import views as auth_views
+from django import path 
 
-urlpatterns = [
-    path('login/', CustomLoginView.as_view(), name='login'),
-    path('logout/', CustomLogoutView.as_view(), name='logout'),
-    path('register/', register, name='register'),
+from .import views 
+urlpatterns=[
+    path("books/",views.get_books,name="get_books"), 
+    path("book-detail/<int:pk>/",views.BookDetail.as_view(),name="book_detail")
 ]
