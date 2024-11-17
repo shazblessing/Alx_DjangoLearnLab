@@ -30,88 +30,40 @@ class BookDetail(DetailView):
         library= get_object_or_404(Book,book=self.kwargs.get("book"))
         return Library.objects.get(library=library)
     
-    def user_register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    else:
-        form = UserCreationForm()
-    return render(request, 'relationship_app/register.html', {'form': form})
+   #@user_passes_test(lambda u: u.userprofile.role == 'Admin')
+#def admin_view(request):
 
-def user_login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')  # Change 'home' to an appropriate view or route
-    else:
-        form = AuthenticationForm()
-    return render(request, 'relationship_app/login.html', {'form': form})
-
-def user_logout(request):
-    logout(request)
-    return render(request, 'relationship_app/logout.html')
-
-class LibraryDetailView(DetailView):
-    model = Library
-    template_name = 'relationship_app/library_detail.html'
-    context_object_name = 'library'
-
-    from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.decorators import login_required
-
-def user_register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    else:
-        form = UserCreationForm()
-    return render(request, 'relationship_app/register.html', {'form': form})
-
-def user_login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')  # Replace 'home' with your desired route
-    else:
-        form = AuthenticationForm()
-    return render(request, 'relationship_app/login.html', {'form': form})
-
-def user_logout(request):
-    logout(request)
-    return render(request, 'relationship_app/logout.html')
-
-
-from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import render
-
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
+from .models import UserProfile
+def has_role(user, role):
+    return UserProfile.objects.filter(user=user.id, role=role).exists()
 def is_admin(user):
-    return user.userprofile.role == 'Admin'
+    return getattr(user, 'userprofile', None) and user.userprofile.role == 'Admin'
+    return has_role(user, "Admin")
+def is_librarian(user):
+    return has_role(user, "Librarian")
+def is_member(user):
+    return has_role(user, "Member")
 
+# Views for Admin users
 @user_passes_test(is_admin)
+def Admin_view(request):
+    # Your view logic here
+    return render(request, 'admin_dashboard.html')
 def admin_view(request):
     return render(request, 'relationship_app/admin_view.html')
 
-def is_librarian(user):
-    return user.userprofile.role == 'Librarian'
-
+# Librarian view that only users with the 'Librarian' role can access
+@user_passes_test(lambda u: u.userprofile.role == 'Librarian')
+# View for Librarian users
 @user_passes_test(is_librarian)
 def librarian_view(request):
+    return render(request, 'librarian_view.html')
+# Member view that only users with the 'Member' role can access
+@user_passes_test(lambda u: u.userprofile.role == 'Member')
     return render(request, 'relationship_app/librarian_view.html')
-
-def is_member(user):
-    return user.userprofile.role == 'Member'
-
+# View for Member users
 @user_passes_test(is_member)
 def member_view(request):
+    return render(request, 'member_view.html')
     return render(request, 'relationship_app/member_view.html')
-
