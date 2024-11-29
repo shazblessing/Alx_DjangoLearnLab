@@ -15,3 +15,17 @@ class BookList(generics.ListAPIView):
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer    
+
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from .models import YourModel
+from .serializers import YourModelSerializer
+
+class YourModelViewSet(viewsets.ModelViewSet):
+    queryset = YourModel.objects.all()
+    serializer_class = YourModelSerializer
+    permission_classes = [IsAuthenticated]  # Only authenticated users can access
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'destroy']:
+            return    
