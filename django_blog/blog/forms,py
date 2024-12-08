@@ -8,3 +8,23 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
+from django import forms
+from .models import Post
+from taggit.forms import TagWidget, TagField
+
+class PostForm(forms.ModelForm):
+    tags = TagField(widgets = TagWidget())
+
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
+
+
+
+from .models import Comment
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
