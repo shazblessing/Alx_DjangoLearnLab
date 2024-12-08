@@ -118,12 +118,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-TEMPLATES = [
-    {
-        ...
-        'DIRS': [os.path.join(BASE_DIR, 'blog', 'templates')],
-        ...
-    },
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
 ]
 
 # Default primary key field type
