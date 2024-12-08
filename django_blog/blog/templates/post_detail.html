@@ -1,0 +1,8 @@
+{% extends "blog/base.html" %}
+{% block content %}
+<h2>{{ object.title }}</h2>
+<p>{{ object.content }}</p>
+<small>By {{ object.author }} on {{ object.published_date }}</small>
+<a href="{% url 'post-update' object.id %}">Edit</a> |
+<a href="{% url 'post-delete' object.id %}">Delete</a>
+{% endblock %}
