@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from .views import NotificationListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/accounts/', include('accounts.urls')),
     path('api/posts/', include('posts.urls')),
+    path('notifications/', NotificationListView.as_view(), name='notification-list'),
 ]
