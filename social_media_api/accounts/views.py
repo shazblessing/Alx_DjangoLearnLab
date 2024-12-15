@@ -106,3 +106,45 @@ class FollowUserView(APIView):
             return Response({'detail': f'You have unfollowed {user_to_unfollow.username}'}, status=status.HTTP_200_OK)
         except CustomUser.DoesNotExist:
             return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+from rest_framework import status, generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import CustomUser
+from .serializers import FollowSerializer
+
+class FollowUserView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        try:
+            # Get the user to follow
+            user_to_follow = CustomUser.objects.get(id=user_id)
+
+            # Add the user to the 'following' relationship of the requesting user
+            request.user.following.add(user_to_follow)
+            
+            return Response({'detail': f'You are now following {user_to_follow.username}'}, status=status.HTTP_200_OK)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, user_id):
+        try:
+            # Get the user to unfollow
+            user_to_unfollow = CustomUser.objects.get(id=user_id)
+
+            # Remove the user from the 'following' relationship of the requesting user
+            request.user.following.remove(user_to_unfollow)
+            
+            return Response({'detail': f'You have unfollowed {user_to_unfollow.username}'}, status=status.HTTP_200_OK)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+class ListFollowersView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Get all users that the current user is following
+        following = request.user.following.all()
+        serializer = FollowSerializer(following, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
