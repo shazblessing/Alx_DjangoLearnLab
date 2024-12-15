@@ -15,3 +15,15 @@
 - `GET /api/posts/comments/{id}/`: Retrieve a specific comment.
 - `PUT /api/posts/comments/{id}/`: Update a comment (Author only).
 - `DELETE /api/posts/comments/{id}/`: Delete a comment (Author only).
+
+### Follow and Feed API Endpoints
+
+#### Follow a User
+**POST** `/accounts/follow/<user_id>/`
+
+#### Unfollow a User
+**DELETE** `/accounts/unfollow/<user_id>/`
+
+#### Get Feed
+**GET** `/posts/feed/`
+- Returns posts from users you follow.
