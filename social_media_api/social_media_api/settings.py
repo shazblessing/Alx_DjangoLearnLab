@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure--s9us19w^)(p6b9!)9et^xh36)q^@7xd&(7^*v_-%)=v0=w^6p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['your-domain.com', 'www.your-domain.com']
 
 
 # Application definition
@@ -45,11 +45,28 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'accounts.CustomUser',
 
+
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
 }
 
+import environ
+
+# Initialize environment variables
+env = environ.Env()
+environ.Env.read_env()  # Reads the .env file
+
+# SECRET_KEY and other sensitive settings
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env.bool('DEBUG', default=False)
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1'])
+
+# Example for database settings
+DATABASES = {
+    'default': env.db('DATABASE_URL')
+}
 
 
 MIDDLEWARE = [
