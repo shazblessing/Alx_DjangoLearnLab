@@ -43,7 +43,6 @@ class RegisterView(APIView):
             'token': token.key
         }, status=status.HTTP_201_CREATED)
 
-
 from django.contrib.auth import authenticate
 
 class LoginView(APIView):
